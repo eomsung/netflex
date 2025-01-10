@@ -31,8 +31,16 @@ const getMovie = async (movieId) => {
   return movie;
 };
 
+const logIn = async (dto) => {
+  const baseURL = `http://localhost:3000/api/auth/log-in`;
+  const response = await axios.post(baseURL, dto);
+  const data = response.data;
+  return data;
+};
+
 const api = {
   getMovieList,
   getMovie,
+  logIn,
 };
 export default api;
