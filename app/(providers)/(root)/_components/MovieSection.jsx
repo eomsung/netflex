@@ -1,8 +1,17 @@
+"use client";
 import React from "react";
 import MovieCard from "./MovieCard";
 import { kku, oreaorea } from "@/assets/fonts";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/api";
 
-function MovieSection({ title, movies }) {
+function MovieSection({ title, category, initialData }) {
+  const { data: movies } = useQuery({
+    queryFn: () => api.getMovieList(category).then((data) => data.results),
+    queryKey: ["movies", { category }],
+    initialData,
+  });
+
   return (
     <div>
       <section className="[&+&]:mt-20">
