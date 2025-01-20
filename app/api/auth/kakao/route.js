@@ -45,5 +45,7 @@ export async function GET(request, context) {
 
     console.log(data);
     return NextResponse.redirect(request.nextUrl.origin);
-  } catch {}
+  } catch {
+    return NextResponse.json("OK");
+  }
 }
