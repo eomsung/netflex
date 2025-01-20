@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum providerName {
+  local
+  kakao
+}
+
+model User {
+  id                String         @id @default(cuid())
+  providerName      providerName
+  providerId        String
+  encryptedPassword String?
+  createAt          DateTime       @default(now())
+  updateAt          DateTime       @default(now())
+  MovieLike         MovieLike[]
+  MovieComment      MovieComment[]
+
+  @@unique([providerName, providerId])
+}
+
+model MovieLike {
+  id String @id @default(cuid())
+
+  movieId  Int
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  createAt DateTime @default(now())
+
+  @@unique([movieId, userId])
+}
+
+model MovieComment {
+  id       String   @id @default(cuid())
+  content  String
+  movieId  Int
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  createAt DateTime @default(now())
+  updateAt DateTime @default(now())
+}

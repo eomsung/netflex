@@ -1,17 +1,24 @@
 "use client";
 
+import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import Rating from "../(providers)/(root)/movies/[moviesId]/_components/Rating";
-import Genre from "../(providers)/(root)/movies/[moviesId]/_components/Genre";
-import LikeButton from "../(providers)/(root)/movies/[moviesId]/_components/LikeButton";
-import api from "@/api";
+import Genre from "../(providers)/(root)/movies/[movieId]/_components/Genre";
+import LikeButton from "../(providers)/(root)/movies/[movieId]/_components/LikeButton";
+import MovieComments from "../(providers)/(root)/movies/[movieId]/_components/MovieComments";
+import Rating from "../(providers)/(root)/movies/[movieId]/_components/Rating";
 
-function MoviePage({ movieId, initialData }) {
+function MoviePage({
+  movieId,
+  initialData,
+  initialmoive,
+  initialmoiveComments,
+}) {
   const { data: movie } = useQuery({
     queryFn: () => api.getMovie(movieId),
     queryKey: ["movie", { movieId }],
     initialData,
+    staleTime: 300000,
   });
 
   const rating = Number(movie.vote_average.toFixed(1));
@@ -63,12 +70,13 @@ function MoviePage({ movieId, initialData }) {
           {/* 스토리 개괄 */}
           <p>{movie.overview}</p>
 
-          <LikeButton />
+          <LikeButton movieId={movieId} />
         </div>
       </div>
 
       {/* 댓글 영역 */}
-      <MovieComments />
+      <MovieComments movieId={movieId} />
+      {/* 무비커멘츠 추가하기 이니셜 데이터 */}
     </main>
   );
 }

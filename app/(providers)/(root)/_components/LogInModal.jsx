@@ -1,27 +1,24 @@
-"use clinet";
+"use client";
+
 import api from "@/api";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useModal } from "@/contexts/ModalContext";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 function LogInModal() {
   const { logIn } = useAuth();
-
   const modal = useModal();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    setError("");
-  }, [email, password]);
-
   const handleClickLogIn = async () => {
     const dto = { email, password };
-
     const isLoginSuccess = await api.logIn(dto);
+
     if (isLoginSuccess) {
       logIn();
       modal.close();
@@ -30,32 +27,55 @@ function LogInModal() {
     }
   };
 
+  const handleClickStratWithKakao = () => {
+    Kakao.Auth.authorize({
+      redirectUri: "http://localhost:3000/api/auth/kakao",
+    });
+  };
+
+  useEffect(() => {
+    setError("");
+  }, [email, password]);
+
   return (
     <Modal>
       <form onSubmit={(e) => e.preventDefault()}>
         <h2 className="text-center font-bold text-2xl mb-8">로그인하기</h2>
-        <input
+
+        <button
+          className="bg-yellow-400 w-full py-3 rounded-lg font-bold"
+          onClick={handleClickStratWithKakao}
+        >
+          카카오로 시작하기
+        </button>
+        <hr className="my-5" />
+
+        <Input
+          label="이메일"
           type="email"
-          className="border border-gray-400 px-5 py-2.5 rounded-lg w-full"
           placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
+        <div className="mb-2" />
+        <Input
+          label="비밀번호"
           type="password"
-          className="border border-gray-400 px-5 py-2.5 rounded-lg w-full mt-2"
           placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {error && <p className="test-sm text-red-500">{error}</p>}
 
-        <button
+        {error && <p className="text-sm mt-2 text-red-500">{error}</p>}
+
+        <Button
           onClick={handleClickLogIn}
-          className="bg-red-600 w-full py-2.5 rounded-lg text-white font-semibold mt-5"
+          intent="primary"
+          size="lg"
+          className={"text-white w-full mt-4"}
         >
           로그인
-        </button>
+        </Button>
       </form>
     </Modal>
   );

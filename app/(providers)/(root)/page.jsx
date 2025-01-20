@@ -1,54 +1,19 @@
 import api from "@/api";
 import MovieSection from "./_components/MovieSection";
 
-//const [movie,setMovie] = useState([])
-// useEffet(()=>{
-//  api.getMovieLis("now_playing").then((data)=>setMovie(data))
-//
-// })
-// CSR 의 경우
-//
 async function HomePage() {
-  // const [
-  //   { data: nowPlayingMovies },
-  //   { data: popularmoives },
-  //   { data: topRatedMoives },
-  //   { data: upcomingMovies },
-  // ] = useQueries(
-  //   ["now_playing", "popular", "top_rate", "upcoming"].map((category) => ({
-  //     queryFn: () => api.getMovieList(category),
-  //     queryKey: ["movies", category],
-  //     initialData: [],
-  //   }))
-  // );
-
-  // const { data: nowPlayingMovies = [] } = useQuery({
-  //   queryFn: () => api.getMovieList("now_playing"),
-  //   queryKey: ["movies", { category: "now_palying" }],
-  // });
-  // const { data: popularmoives = [] } = useQuery({
-  //   queryFn: () => api.getMovieList("popular"),
-  //   queryKey: ["movies", { category: "popular" }],
-  // });
-  // const { data: topRatedMoives = [] } = useQuery({
-  //   queryFn: () => api.getMovieList("top_rated"),
-  //   queryKey: ["movies", { category: "top_rated" }],
-  // });
-  // const { data: upcomingMovies = [] } = useQuery({
-  //   queryFn: () => api.getMovieList("upcoming"),
-  //   queryKey: ["movies", { category: "upcoming" }],
-  // });
-
-  const nowPlayingmoviesPromise = api.getMovieList("now_playing");
-  const popularmoivesPromise = api.getMovieList("popular");
-  const topRatedMoivesPromise = api.getMovieList("top_rated");
+  // 아래 네 개의 api 통신이, 서로를 기다리지 않고, 병렬적으로 통신을 시작
+  const nowPlayingMoviesPromise = api.getMovieList("now_playing");
+  const popularMoviesPromise = api.getMovieList("popular");
+  const topRatedMoviesPromise = api.getMovieList("top_rated");
   const upcomingMoviesPromise = api.getMovieList("upcoming");
 
-  const [nowPlayingmovies, popularmoives, topRatedMoives, upcomingMovies] =
+  // 병렬적으로 통신중인 모든 api 호출이 완료가 되면, 결과값이 정리되어 나옴
+  const [nowPlayingMovies, popularMovies, topRatedMovies, upcomingMovies] =
     await Promise.all([
-      nowPlayingmoviesPromise,
-      popularmoivesPromise,
-      topRatedMoivesPromise,
+      nowPlayingMoviesPromise,
+      popularMoviesPromise,
+      topRatedMoviesPromise,
       upcomingMoviesPromise,
     ]);
 
@@ -56,24 +21,24 @@ async function HomePage() {
     <main className="py-10">
       <MovieSection
         title="현재 상영중인 영화"
-        initialData={nowPlayingmovies.results}
         category="now_playing"
-      ></MovieSection>
+        initialData={nowPlayingMovies.results}
+      />
       <MovieSection
         title="인기 있는 영화"
-        initialData={popularmoives.results}
         category="popular"
-      ></MovieSection>
+        initialData={popularMovies.results}
+      />
       <MovieSection
-        title="별점이 높은 영화"
-        initialData={topRatedMoives.results}
+        title="평점이 높은 영화"
         category="top_rated"
-      ></MovieSection>
+        initialData={topRatedMovies.results}
+      />
       <MovieSection
-        title="곧 상영되는 영화"
-        initialData={upcomingMovies.results}
+        title="곧 상영 예정인 영화"
         category="upcoming"
-      ></MovieSection>
+        initialData={upcomingMovies.results}
+      />
     </main>
   );
 }

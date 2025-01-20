@@ -1,4 +1,3 @@
-import React from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ModalProvider } from "@/contexts/ModalContext";
 import { TanstackQueryProvider } from "@/libs/tanstack-query";
